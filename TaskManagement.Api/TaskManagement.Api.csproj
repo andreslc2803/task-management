@@ -12,7 +12,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\TaskManagement.DAL\TaskManagement.DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TaskManagement.BL\TaskManagement.BL.csproj" />
   </ItemGroup>
 
 </Project>

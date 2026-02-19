@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TaskManagement.DAL\TaskManagement.DAL.csproj" />
-    <ProjectReference Include="..\TaskManagement.Entities\TaskManagement.Entities.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.24" />
   </ItemGroup>
 
 </Project>

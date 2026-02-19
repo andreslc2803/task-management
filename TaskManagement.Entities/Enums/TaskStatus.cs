@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TaskManagement.Entities.DTOs
+namespace TaskManagement.Entities.Enums
 {
-    public class Tasks
+    public enum TaskStatus
     {
+        Pending,
+        InProgress,
+        Done
     }
 }
