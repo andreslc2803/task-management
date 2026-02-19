@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TaskManagement.BL.Interfaces;
+using TaskManagement.Entities.Constants;
 using TaskManagement.Entities.DTO;
 
 namespace TaskManagement.Api.Controllers
@@ -58,6 +59,15 @@ namespace TaskManagement.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<TaskDto>> CreateTask(TaskCreateDto task)
         {
+            if (string.IsNullOrWhiteSpace(task.Title))
+                return BadRequest("Title is required");
+
+            if (task.UserId <= 0)
+                return BadRequest("UserId must be provided and greater than 0");
+
+            if (!_service.IsValidJson(task.TaskPriority))
+                return BadRequest("TaskPriority must be valid JSON");
+
             var created = await _service.CreateAsync(task);
             return CreatedAtAction(nameof(GetTask), new { id = created.Id }, created);
         }
@@ -71,8 +81,17 @@ namespace TaskManagement.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(int id, TaskUpdateDto task)
         {
-            if (id != task.Id)
-                return BadRequest();
+            if (id <= 0)
+                return BadRequest("Task ID mismatch");
+
+            if (string.IsNullOrWhiteSpace(task.Title))
+                return BadRequest("Title is required");
+
+            if (task.UserId <= 0)
+                return BadRequest("UserId must be provided and greater than 0");
+
+            if (!_service.IsValidJson(task.TaskPriority))
+                return BadRequest("TaskPriority must be valid JSON");
 
             try
             {
@@ -101,6 +120,38 @@ namespace TaskManagement.Api.Controllers
             catch (KeyNotFoundException)
             {
                 return NotFound();
+            }
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Updates only the status of a task.
+        /// </summary>
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] string newStatus)
+        {
+            var validStatuses = new[]
+            {
+                TaskStatuses.Pending,
+                TaskStatuses.InProgress,
+                TaskStatuses.Done
+            };
+
+            if (string.IsNullOrWhiteSpace(newStatus) || !validStatuses.Contains(newStatus))
+                return BadRequest($"Invalid status value. Valid values are: {string.Join(", ", validStatuses)}");
+
+            try
+            {
+                await _service.UpdateStatusAsync(id, newStatus);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
             }
 
             return NoContent();

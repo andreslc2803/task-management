@@ -53,12 +53,21 @@ namespace TaskManagement.Api.Controllers
         /// <summary>
         /// Creates a new user.
         /// </summary>
-        /// <param name="user">User create DTO.</param>
+        /// <param name="userDto">User create DTO.</param>
         /// <returns>Created user DTO with its ID.</returns>
         [HttpPost]
-        public async Task<ActionResult<UserDto>> CreateUser(UserCreateDto user)
+        public async Task<ActionResult<UserDto>> CreateUser(UserCreateDto userDto)
         {
-            var created = await _service.CreateAsync(user);
+            if (string.IsNullOrWhiteSpace(userDto.Name))
+                return BadRequest("Name is required.");
+
+            if (string.IsNullOrWhiteSpace(userDto.Email))
+                return BadRequest("Email is required.");
+
+            if (!_service.IsValidEmail(userDto.Email))
+                return BadRequest("Email format is invalid.");
+
+            var created = await _service.CreateAsync(userDto);
             return CreatedAtAction(nameof(GetUser), new { id = created.Id }, created);
         }
 
@@ -69,11 +78,20 @@ namespace TaskManagement.Api.Controllers
         /// <param name="user">Updated user object.</param>
         /// <returns>No content if successful, BadRequest if ID mismatch.</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, UserUpdateDto user)
+        public async Task<IActionResult> UpdateUser(int id, UserUpdateDto userDto)
         {
+            if (string.IsNullOrEmpty(userDto.Name))
+                return BadRequest("Name is required.");
+
+            if (string.IsNullOrWhiteSpace(userDto.Email))
+                return BadRequest("Email is required.");
+
+            if (!_service.IsValidEmail(userDto.Email))
+                return BadRequest("Email format is invalid.");
+
             try
             {
-                await _service.UpdateAsync(id, user);
+                await _service.UpdateAsync(id, userDto);
             }
             catch (KeyNotFoundException)
             {

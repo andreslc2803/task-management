@@ -29,5 +29,7 @@ namespace TaskManagement.BL.Interfaces
         /// Delete a user by id.
         /// </summary>
         Task DeleteAsync(int id);
+
+        bool IsValidEmail(string email);
     }
 }

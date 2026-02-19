@@ -35,14 +35,14 @@ namespace TaskManagement.DAL.Repositories
 
         public async Task<TaskDto?> GetByIdAsync(int id)
         {
-            var t = await _context.Tasks.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-            if (t == null) return null;
+            var task = await _context.Tasks.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            if (task == null) return null;
             return new TaskDto
             {
-                Id = t.Id,
-                Title = t.Title,
-                Status = t.Status,
-                TaskPriority = t.TaskPriority ?? string.Empty
+                Id = task.Id,
+                Title = task.Title,
+                Status = task.Status,
+                TaskPriority = task.TaskPriority ?? string.Empty
             };
         }
 

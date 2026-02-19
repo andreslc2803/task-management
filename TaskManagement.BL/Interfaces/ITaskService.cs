@@ -28,5 +28,9 @@ namespace TaskManagement.BL.Interfaces
         /// Delete a task by id.
         /// </summary>
         Task DeleteAsync(int id);
+
+        bool IsValidJson(string json);
+
+        Task UpdateStatusAsync(int id, string newStatus);
     }
 }

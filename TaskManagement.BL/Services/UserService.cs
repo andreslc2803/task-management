@@ -1,4 +1,5 @@
-﻿using TaskManagement.BL.Interfaces;
+﻿using System.Text.RegularExpressions;
+using TaskManagement.BL.Interfaces;
 using TaskManagement.DAL.Repositories.Interfaces;
 using TaskManagement.Entities.DTO;
 using TaskManagement.Entities.Models;
@@ -11,11 +12,11 @@ namespace TaskManagement.BL.Services
     /// </summary>
     public class UserService : IUserService
     {
-        private readonly IUserRepository _repo;
+        private readonly IUserRepository _repository;
 
         public UserService(IUserRepository repository)
         {
-            _repo = repository;
+            _repository = repository;
         }
 
         /// <summary>
@@ -23,7 +24,7 @@ namespace TaskManagement.BL.Services
         /// </summary>
         public async Task<IEnumerable<UserDto>> GetAllAsync()
         {
-            return await _repo.GetAllAsync();
+            return await _repository.GetAllAsync();
         }
 
         /// <summary>
@@ -31,7 +32,7 @@ namespace TaskManagement.BL.Services
         /// </summary>
         public async Task<UserDto?> GetByIdAsync(int id)
         {
-            return await _repo.GetByIdAsync(id);
+            return await _repository.GetByIdAsync(id);
         }
 
         /// <summary>
@@ -43,10 +44,10 @@ namespace TaskManagement.BL.Services
             {
                 Name = dto.Name,
                 Email = dto.Email,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
-            var created = await _repo.CreateAsync(user);
+            var created = await _repository.CreateAsync(user);
             return new UserDto
             {
                 Id = created.Id,
@@ -62,13 +63,15 @@ namespace TaskManagement.BL.Services
         /// </summary>
         public async Task UpdateAsync(int id, UserUpdateDto dto)
         {
-            var existing = await _repo.GetModelByIdAsync(id);
-            if (existing == null) throw new KeyNotFoundException("User not found");
+            var existing = await _repository.GetModelByIdAsync(id);
+            
+            if (existing == null) 
+                throw new KeyNotFoundException("User not found");
 
             existing.Name = dto.Name;
             existing.Email = dto.Email;
 
-            await _repo.UpdateAsync(existing);
+            await _repository.UpdateAsync(existing);
         }
 
         /// <summary>
@@ -76,10 +79,22 @@ namespace TaskManagement.BL.Services
         /// </summary>
         public async Task DeleteAsync(int id)
         {
-            var existing = await _repo.GetModelByIdAsync(id);
-            if (existing == null) throw new KeyNotFoundException("User not found");
+            var existing = await _repository.GetModelByIdAsync(id);
+            
+            if (existing == null) 
+                throw new KeyNotFoundException("User not found");
 
-            await _repo.DeleteAsync(existing);
+            await _repository.DeleteAsync(existing);
+        }
+
+        /// <summary>
+        /// Basic email format validation.
+        /// </summary>
+        public bool IsValidEmail(string email)
+        {
+            // Simple regex for email validation
+            var pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
         }
     }
 }
