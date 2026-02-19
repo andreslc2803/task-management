@@ -10,7 +10,7 @@ namespace TaskManagement.Api.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : Controller
+    public class UserController : ControllerBase
     {
         private readonly IUserService _service;
 
@@ -28,7 +28,8 @@ namespace TaskManagement.Api.Controllers
         /// </summary>
         /// <returns>List of Users.</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
+        [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers(CancellationToken cancellationToken = default)
         {
             var users = await _service.GetAllAsync();
             return Ok(users);
@@ -40,7 +41,9 @@ namespace TaskManagement.Api.Controllers
         /// <param name="id">User ID.</param>
         /// <returns>The user DTO if found, otherwise NotFound.</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserDto>> GetUser(int id)
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<UserDto>> GetUser(int id, CancellationToken cancellationToken = default)
         {
             var user = await _service.GetByIdAsync(id);
 
@@ -56,9 +59,14 @@ namespace TaskManagement.Api.Controllers
         /// <param name="userDto">User create DTO.</param>
         /// <returns>Created user DTO with its ID.</returns>
         [HttpPost]
-        public async Task<ActionResult<UserDto>> CreateUser(UserCreateDto userDto)
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<UserDto>> CreateUser([FromBody] UserCreateDto userDto, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrWhiteSpace(userDto.Name))
+            if (userDto == null)
+                return BadRequest("User payload is required.");
+
+            if (string.IsNullOrEmpty(userDto.Name))
                 return BadRequest("Name is required.");
 
             if (string.IsNullOrWhiteSpace(userDto.Email))

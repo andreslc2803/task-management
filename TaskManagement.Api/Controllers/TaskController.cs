@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using TaskManagement.BL.Interfaces;
 using TaskManagement.Entities.DTO;
 
@@ -28,7 +29,8 @@ namespace TaskManagement.Api.Controllers
         /// </summary>
         /// <returns>List of TaskItems.</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskDto>>> GetTasks()
+        [ProducesResponseType(typeof(IEnumerable<TaskDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<TaskDto>>> GetTasks(CancellationToken cancellationToken = default)
         {
             var tasks = await _service.GetAllAsync();
             return Ok(tasks);
@@ -40,7 +42,9 @@ namespace TaskManagement.Api.Controllers
         /// <param name="id">Task ID.</param>
         /// <returns>The task if found, otherwise NotFound.</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaskDto>> GetTask(int id)
+        [ProducesResponseType(typeof(TaskDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<TaskDto>> GetTask(int id, CancellationToken cancellationToken = default)
         {
             var task = await _service.GetByIdAsync(id);
 
@@ -56,9 +60,14 @@ namespace TaskManagement.Api.Controllers
         /// <param name="task">Task object to create.</param>
         /// <returns>Created task with its ID.</returns>
         [HttpPost]
-        public async Task<ActionResult<TaskDto>> CreateTask(TaskCreateDto task)
+        [ProducesResponseType(typeof(TaskDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<TaskDto>> CreateTask([FromBody] TaskCreateDto task, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrWhiteSpace(task.Title))
+            if (task == null)
+                return BadRequest("Task payload is required.");
+
+            if (string.IsNullOrEmpty(task.Title))
                 return BadRequest("Title is required");
 
             if (task.UserId <= 0)
@@ -75,7 +84,10 @@ namespace TaskManagement.Api.Controllers
         /// Updates only the status of a task.
         /// </summary>
         [HttpPut("{id}/status")]
-        public async Task<IActionResult> UpdateStatus(int id, [FromBody] string newStatus)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody][Required] string newStatus, CancellationToken cancellationToken = default)
         {
             var validStatuses = new[]
             {
@@ -87,19 +99,7 @@ namespace TaskManagement.Api.Controllers
             if (string.IsNullOrWhiteSpace(newStatus) || !validStatuses.Contains(newStatus))
                 return BadRequest($"Invalid status value. Valid values are: {string.Join(", ", validStatuses)}");
 
-            try
-            {
-                await _service.UpdateStatusAsync(id, newStatus);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
+            await _service.UpdateStatusAsync(id, newStatus);
             return NoContent();
         }
     }

@@ -43,6 +43,7 @@ namespace TaskManagement.BL.Services
         public async Task<TaskDto> CreateAsync(TaskCreateDto dto)
         {
             var userExists = await _repositoryUser.GetModelByIdAsync(dto.UserId);
+
             if (userExists == null)
                 throw new InvalidOperationException("Assigned user does not exist");
 

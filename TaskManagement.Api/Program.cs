@@ -4,6 +4,7 @@ using TaskManagement.DAL.Repositories;
 using TaskManagement.BL.Services;
 using TaskManagement.DAL.Repositories.Interfaces;
 using TaskManagement.BL.Interfaces;
+using TaskManagement.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
