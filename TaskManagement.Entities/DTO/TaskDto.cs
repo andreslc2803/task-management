@@ -35,6 +35,6 @@ namespace TaskManagement.Entities.DTO
         [Required(ErrorMessage = "UserId is required.")]
         public int UserId { get; set; }
 
-        public string? TaskPriority { get; set; } = Constants.TaskStatus.Pending;
+        public string? TaskPriority { get; set; }
     }
 }
