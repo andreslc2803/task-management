@@ -1,0 +1,19 @@
+# Build
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Logs
+*.log
+
+# Config
+appsettings.Development.json
+.env
+
+# Angular (si agregas luego)
+node_modules/
+dist/
