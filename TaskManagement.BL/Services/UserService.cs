@@ -59,36 +59,7 @@ namespace TaskManagement.BL.Services
         }
 
         /// <summary>
-        /// Update existing user from DTO.
-        /// </summary>
-        public async Task UpdateAsync(int id, UserUpdateDto dto)
-        {
-            var existing = await _repository.GetModelByIdAsync(id);
-            
-            if (existing == null) 
-                throw new KeyNotFoundException("User not found");
-
-            existing.Name = dto.Name;
-            existing.Email = dto.Email;
-
-            await _repository.UpdateAsync(existing);
-        }
-
-        /// <summary>
-        /// Delete user by id.
-        /// </summary>
-        public async Task DeleteAsync(int id)
-        {
-            var existing = await _repository.GetModelByIdAsync(id);
-            
-            if (existing == null) 
-                throw new KeyNotFoundException("User not found");
-
-            await _repository.DeleteAsync(existing);
-        }
-
-        /// <summary>
-        /// Basic email format validation.
+        /// Validate email format using a regular expression. Returns true if valid, false otherwise.
         /// </summary>
         public bool IsValidEmail(string email)
         {

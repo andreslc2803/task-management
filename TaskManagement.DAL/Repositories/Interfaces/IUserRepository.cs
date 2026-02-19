@@ -29,15 +29,5 @@ namespace TaskManagement.DAL.Repositories.Interfaces
         /// Get the data model by id for update/delete operations.
         /// </summary>
         Task<User?> GetModelByIdAsync(int id);
-
-        /// <summary>
-        /// Update an existing user model.
-        /// </summary>
-        Task UpdateAsync(User user);
-
-        /// <summary>
-        /// Delete an existing user model.
-        /// </summary>
-        Task DeleteAsync(User user);
     }
 }

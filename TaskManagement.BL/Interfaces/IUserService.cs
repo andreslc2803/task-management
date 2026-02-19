@@ -21,15 +21,8 @@ namespace TaskManagement.BL.Interfaces
         Task<UserDto> CreateAsync(UserCreateDto dto);
 
         /// <summary>
-        /// Update an existing user identified by id using the update DTO.
+        /// Validate email format using a regular expression. Returns true if valid, false otherwise.
         /// </summary>
-        Task UpdateAsync(int id, UserUpdateDto dto);
-
-        /// <summary>
-        /// Delete a user by id.
-        /// </summary>
-        Task DeleteAsync(int id);
-
         bool IsValidEmail(string email);
     }
 }

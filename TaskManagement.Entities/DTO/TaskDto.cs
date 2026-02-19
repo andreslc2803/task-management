@@ -30,30 +30,11 @@ namespace TaskManagement.Entities.DTO
         [Required(ErrorMessage = "Status is required.")]
         [MaxLength(20)]
         [RegularExpression("Pending|InProgress|Done", ErrorMessage = "Status must be Pending, InProgress, or Done.")]
-        public string Status { get; set; } = TaskStatuses.Pending;
+        public string Status { get; set; } = Constants.TaskStatus.Pending;
 
         [Required(ErrorMessage = "UserId is required.")]
         public int UserId { get; set; }
 
-        public string? TaskPriority { get; set; } = TaskStatuses.Pending;
-    }
-
-    public class TaskUpdateDto
-    {
-        [Required(ErrorMessage = "Title is required.")]
-        [MaxLength(200)]
-        public string Title { get; set; } = string.Empty;
-
-        public string? Description { get; set; }
-
-        [Required(ErrorMessage = "Status is required.")]
-        [MaxLength(20)]
-        [RegularExpression("Pending|InProgress|Done", ErrorMessage = "Status must be Pending, InProgress, or Done.")]
-        public string Status { get; set; } = TaskStatuses.Pending;
-
-        [Required(ErrorMessage = "UserId is required.")]
-        public int UserId { get; set; }
-
-        public string? TaskPriority { get; set; }
+        public string? TaskPriority { get; set; } = Constants.TaskStatus.Pending;
     }
 }

@@ -36,10 +36,5 @@ namespace TaskManagement.DAL.Repositories.Interfaces
         /// Update an existing task model.
         /// </summary>
         Task UpdateAsync(Tasks task);
-
-        /// <summary>
-        /// Delete an existing task model.
-        /// </summary>
-        Task DeleteAsync(Tasks task);
     }
 }

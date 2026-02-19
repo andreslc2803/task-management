@@ -63,11 +63,5 @@ namespace TaskManagement.DAL.Repositories
             _context.Tasks.Update(task);
             await _context.SaveChangesAsync();
         }
-
-        public async Task DeleteAsync(Tasks task)
-        {
-            _context.Tasks.Remove(task);
-            await _context.SaveChangesAsync();
-        }
     }
 }

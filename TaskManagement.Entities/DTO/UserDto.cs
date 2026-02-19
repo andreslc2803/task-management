@@ -28,16 +28,4 @@ namespace TaskManagement.Entities.DTO
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
     }
-
-    public class UserUpdateDto
-    {
-        [Required]
-        [MaxLength(100)]
-        public string Name { get; set; } = string.Empty;
-
-        [Required]
-        [MaxLength(150)]
-        [EmailAddress]
-        public string Email { get; set; } = string.Empty;
-    }
 }

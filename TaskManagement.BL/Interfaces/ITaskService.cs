@@ -20,17 +20,13 @@ namespace TaskManagement.BL.Interfaces
         Task<TaskDto> CreateAsync(TaskCreateDto dto);
 
         /// <summary>
-        /// Update an existing task identified by id using the update DTO.
+        /// Validate json format
         /// </summary>
-        Task UpdateAsync(int id, TaskUpdateDto dto);
-
-        /// <summary>
-        /// Delete a task by id.
-        /// </summary>
-        Task DeleteAsync(int id);
-
         bool IsValidJson(string json);
 
+        /// <summary>
+        /// Update only the status of a task with business rules.
+        /// </summary>
         Task UpdateStatusAsync(int id, string newStatus);
     }
 }

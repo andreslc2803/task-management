@@ -70,55 +70,5 @@ namespace TaskManagement.Api.Controllers
             var created = await _service.CreateAsync(userDto);
             return CreatedAtAction(nameof(GetUser), new { id = created.Id }, created);
         }
-
-        /// <summary>
-        /// Updates an existing user.
-        /// </summary>
-        /// <param name="id">user ID.</param>
-        /// <param name="user">Updated user object.</param>
-        /// <returns>No content if successful, BadRequest if ID mismatch.</returns>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, UserUpdateDto userDto)
-        {
-            if (string.IsNullOrEmpty(userDto.Name))
-                return BadRequest("Name is required.");
-
-            if (string.IsNullOrWhiteSpace(userDto.Email))
-                return BadRequest("Email is required.");
-
-            if (!_service.IsValidEmail(userDto.Email))
-                return BadRequest("Email format is invalid.");
-
-            try
-            {
-                await _service.UpdateAsync(id, userDto);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
-        }
-
-        /// <summary>
-        /// Deletes a user by ID.
-        /// </summary>
-        /// <param name="id">User ID.</param>
-        /// <returns>No content if successful, NotFound if user does not exist.</returns>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            try
-            {
-                await _service.DeleteAsync(id);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
-        }
     }
 }

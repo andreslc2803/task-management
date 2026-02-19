@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TaskManagement.BL.Interfaces;
-using TaskManagement.Entities.Constants;
 using TaskManagement.Entities.DTO;
 
 namespace TaskManagement.Api.Controllers
@@ -73,59 +72,6 @@ namespace TaskManagement.Api.Controllers
         }
 
         /// <summary>
-        /// Updates an existing task.
-        /// </summary>
-        /// <param name="id">Task ID.</param>
-        /// <param name="task">Updated task object.</param>
-        /// <returns>No content if successful, BadRequest if ID mismatch.</returns>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTask(int id, TaskUpdateDto task)
-        {
-            if (id <= 0)
-                return BadRequest("Task ID mismatch");
-
-            if (string.IsNullOrWhiteSpace(task.Title))
-                return BadRequest("Title is required");
-
-            if (task.UserId <= 0)
-                return BadRequest("UserId must be provided and greater than 0");
-
-            if (!_service.IsValidJson(task.TaskPriority))
-                return BadRequest("TaskPriority must be valid JSON");
-
-            try
-            {
-                await _service.UpdateAsync(id, task);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
-        }
-
-        /// <summary>
-        /// Deletes a task by ID.
-        /// </summary>
-        /// <param name="id">Task ID.</param>
-        /// <returns>No content if successful, NotFound if task does not exist.</returns>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTask(int id)
-        {
-            try
-            {
-                await _service.DeleteAsync(id);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
-        }
-
-        /// <summary>
         /// Updates only the status of a task.
         /// </summary>
         [HttpPut("{id}/status")]
@@ -133,9 +79,9 @@ namespace TaskManagement.Api.Controllers
         {
             var validStatuses = new[]
             {
-                TaskStatuses.Pending,
-                TaskStatuses.InProgress,
-                TaskStatuses.Done
+                Entities.Constants.TaskStatus.Pending,
+                Entities.Constants.TaskStatus.InProgress,
+                Entities.Constants.TaskStatus.Done
             };
 
             if (string.IsNullOrWhiteSpace(newStatus) || !validStatuses.Contains(newStatus))

@@ -70,20 +70,6 @@ namespace TaskManagement.DAL.Repositories
             return user;
         }
 
-        // PUT: update
-        public async Task UpdateAsync(User user)
-        {
-            _context.User.Update(user);
-            await _context.SaveChangesAsync();
-        }
-
-        // DELETE: delete
-        public async Task DeleteAsync(User user)
-        {
-            _context.User.Remove(user);
-            await _context.SaveChangesAsync();
-        }
-
         public async Task<User?> GetModelByIdAsync(int id)
         {
             return await _context.User.FirstOrDefaultAsync(u => u.Id == id);

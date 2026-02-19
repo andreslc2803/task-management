@@ -1,7 +1,6 @@
 using System.Text.Json;
 using TaskManagement.BL.Interfaces;
 using TaskManagement.DAL.Repositories.Interfaces;
-using TaskManagement.Entities.Constants;
 using TaskManagement.Entities.DTO;
 using TaskManagement.Entities.Models;
 
@@ -68,42 +67,6 @@ namespace TaskManagement.BL.Services
         }
 
         /// <summary>
-        /// Update existing task from DTO.
-        /// </summary>
-        public async Task UpdateAsync(int id, TaskUpdateDto dto)
-        {
-            var existing = await _repositoryTask.GetModelByIdAsync(id);
-            
-            if (existing == null) 
-                throw new KeyNotFoundException("Task not found");
-
-            // Rule: cannot change directly from Pending->Done
-            if (existing.Status == TaskStatuses.Pending && dto.Status == TaskStatuses.Done)
-                throw new InvalidOperationException("Cannot change status from Pending directly to Done");
-
-            existing.Title = dto.Title;
-            existing.Description = dto.Description;
-            existing.Status = dto.Status;
-            existing.TaskPriority = dto.TaskPriority;
-            existing.UserId = dto.UserId;
-
-            await _repositoryTask.UpdateAsync(existing);
-        }
-
-        /// <summary>
-        /// Delete task by id.
-        /// </summary>
-        public async Task DeleteAsync(int id)
-        {
-            var existing = await _repositoryTask.GetModelByIdAsync(id);
-
-            if (existing == null) 
-                throw new KeyNotFoundException("Task not found");
-
-            await _repositoryTask.DeleteAsync(existing);
-        }
-
-        /// <summary>
         /// Update only the status of a task with business rules.
         /// </summary>
         public async Task UpdateStatusAsync(int id, string newStatus)
@@ -113,13 +76,16 @@ namespace TaskManagement.BL.Services
             if (task == null)
                 throw new KeyNotFoundException("Task not found");
 
-            if (task.Status == TaskStatuses.Pending && newStatus == TaskStatuses.Done)
+            if (task.Status == Entities.Constants.TaskStatus.Pending && newStatus == Entities.Constants.TaskStatus.Done)
                 throw new InvalidOperationException("Cannot change status from Pending directly to Done");
 
             task.Status = newStatus;
             await _repositoryTask.UpdateAsync(task);
         }
 
+        /// <summary>
+        /// Validate json format
+        /// </summary>
         public bool IsValidJson(string json)
         {
             if (string.IsNullOrWhiteSpace(json)) return false;
