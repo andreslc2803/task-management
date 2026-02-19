@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using TaskManagement.DAL.Data;
 using TaskManagement.DAL.Repositories;
 using TaskManagement.BL.Services;
+using TaskManagement.DAL.Repositories.Interfaces;
+using TaskManagement.BL.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,8 @@ builder.Services.AddDbContext<TaskManagementDbContext>(options => options.UseSql
 // Repositories and Services
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

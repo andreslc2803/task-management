@@ -1,9 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using TaskManagement.DAL.Data;
+using TaskManagement.DAL.Repositories.Interfaces;
 using TaskManagement.Entities.Models;
+using TaskManagement.Entities.DTO;
 
 namespace TaskManagement.DAL.Repositories
 {
+    /// <summary>
+    /// Repository implementation for task persistence. Maps data model to DTOs for read operations
+    /// and provides model-level methods for create/update/delete.
+    /// </summary>
     public class TaskRepository : ITaskRepository
     {
         private readonly TaskManagementDbContext _context;
@@ -13,14 +19,36 @@ namespace TaskManagement.DAL.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Tasks>> GetAllAsync()
+        public async Task<IEnumerable<TaskDto>> GetAllAsync()
         {
-            return await _context.Tasks.AsNoTracking().ToListAsync();
+            return await _context.Tasks
+                .AsNoTracking()
+                .Select(t => new TaskDto
+                {
+                    Id = t.Id,
+                    Title = t.Title,
+                    Status = t.Status,
+                    TaskPriority = t.TaskPriority ?? string.Empty
+                })
+                .ToListAsync();
         }
 
-        public async Task<Tasks?> GetByIdAsync(int id)
+        public async Task<TaskDto?> GetByIdAsync(int id)
         {
-            return await _context.Tasks.FindAsync(id);
+            var t = await _context.Tasks.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            if (t == null) return null;
+            return new TaskDto
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Status = t.Status,
+                TaskPriority = t.TaskPriority ?? string.Empty
+            };
+        }
+
+        public async Task<Tasks?> GetModelByIdAsync(int id)
+        {
+            return await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Tasks> CreateAsync(Tasks task)

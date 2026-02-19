@@ -5,13 +5,10 @@ namespace TaskManagement.DAL.Data
 {
     public class TaskManagementDbContext : DbContext
     {
-        public TaskManagementDbContext(DbContextOptions<TaskManagementDbContext> options)
-            : base(options)
-        {
-        }
+        public TaskManagementDbContext(DbContextOptions<TaskManagementDbContext> options) : base(options){}
 
         public DbSet<Tasks> Tasks { get; set; } = null!;
-        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<User> User { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TaskManagement.BL.Services;
-using TaskManagement.Entities.Models;
+using TaskManagement.BL.Interfaces;
+using TaskManagement.Entities.DTO;
 
 namespace TaskManagement.Api.Controllers
 {
@@ -28,7 +28,7 @@ namespace TaskManagement.Api.Controllers
         /// </summary>
         /// <returns>List of TaskItems.</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tasks>>> GetTasks()
+        public async Task<ActionResult<IEnumerable<TaskDto>>> GetTasks()
         {
             var tasks = await _service.GetAllAsync();
             return Ok(tasks);
@@ -40,7 +40,7 @@ namespace TaskManagement.Api.Controllers
         /// <param name="id">Task ID.</param>
         /// <returns>The task if found, otherwise NotFound.</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Tasks>> GetTask(int id)
+        public async Task<ActionResult<TaskDto>> GetTask(int id)
         {
             var task = await _service.GetByIdAsync(id);
 
@@ -56,7 +56,7 @@ namespace TaskManagement.Api.Controllers
         /// <param name="task">Task object to create.</param>
         /// <returns>Created task with its ID.</returns>
         [HttpPost]
-        public async Task<ActionResult<Tasks>> CreateTask(Tasks task)
+        public async Task<ActionResult<TaskDto>> CreateTask(TaskCreateDto task)
         {
             var created = await _service.CreateAsync(task);
             return CreatedAtAction(nameof(GetTask), new { id = created.Id }, created);
@@ -69,7 +69,7 @@ namespace TaskManagement.Api.Controllers
         /// <param name="task">Updated task object.</param>
         /// <returns>No content if successful, BadRequest if ID mismatch.</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTask(int id, Tasks task)
+        public async Task<IActionResult> UpdateTask(int id, TaskUpdateDto task)
         {
             if (id != task.Id)
                 return BadRequest();

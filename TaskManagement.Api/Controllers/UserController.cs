@@ -1,0 +1,106 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using TaskManagement.BL.Interfaces;
+using TaskManagement.Entities.DTO;
+
+namespace TaskManagement.Api.Controllers
+{
+    /// <summary>
+    /// Controller to manage User.
+    /// Provides endpoints to create, read, update and delete user.
+    /// </summary>
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserController : Controller
+    {
+        private readonly IUserService _service;
+
+        /// <summary>
+        /// Constructor that injects the User service.
+        /// </summary>
+        /// <param name="service">Business service for user.</param>
+        public UserController(IUserService service)
+        {
+            _service = service;
+        }
+
+        /// <summary>
+        /// Retrieves all users.
+        /// </summary>
+        /// <returns>List of Users.</returns>
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
+        {
+            var users = await _service.GetAllAsync();
+            return Ok(users);
+        }
+
+        /// <summary>
+        /// Retrieves a specific user by id.
+        /// </summary>
+        /// <param name="id">User ID.</param>
+        /// <returns>The user DTO if found, otherwise NotFound.</returns>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserDto>> GetUser(int id)
+        {
+            var user = await _service.GetByIdAsync(id);
+
+            if (user == null)
+                return NotFound();
+
+            return Ok(user);
+        }
+
+        /// <summary>
+        /// Creates a new user.
+        /// </summary>
+        /// <param name="user">User create DTO.</param>
+        /// <returns>Created user DTO with its ID.</returns>
+        [HttpPost]
+        public async Task<ActionResult<UserDto>> CreateUser(UserCreateDto user)
+        {
+            var created = await _service.CreateAsync(user);
+            return CreatedAtAction(nameof(GetUser), new { id = created.Id }, created);
+        }
+
+        /// <summary>
+        /// Updates an existing user.
+        /// </summary>
+        /// <param name="id">user ID.</param>
+        /// <param name="user">Updated user object.</param>
+        /// <returns>No content if successful, BadRequest if ID mismatch.</returns>
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, UserUpdateDto user)
+        {
+            try
+            {
+                await _service.UpdateAsync(id, user);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Deletes a user by ID.
+        /// </summary>
+        /// <param name="id">User ID.</param>
+        /// <returns>No content if successful, NotFound if user does not exist.</returns>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            try
+            {
+                await _service.DeleteAsync(id);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+    }
+}
