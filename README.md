@@ -5,7 +5,11 @@
 1. Clona el repositorio y sitúate en la raíz del proyecto:
 
    ```bash
-   git clone <https://github.com/andreslc2803/task-management.git>
+   git clone https://github.com/andreslc2803/task-management.git
+   ```
+
+   ```branch 
+   master
    ```
 
 2. Configura la cadena de conexión para desarrollo en `TaskManagement.Api/appsettings.Development.json` o mediante la variable de entorno `ConnectionStrings__DefaultConnection`.
