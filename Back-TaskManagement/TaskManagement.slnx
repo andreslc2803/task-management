@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="TaskManagement.Api/TaskManagement.Api.csproj" />
+  <Project Path="TaskManagement.BL/TaskManagement.BL.csproj" Id="02303b19-b0ea-442e-859a-2f74e9314393" />
+  <Project Path="TaskManagement.DAL/TaskManagement.DAL.csproj" Id="cd18d56f-b967-438c-b1a6-dd54893aee16" />
+  <Project Path="TaskManagement.Entities/TaskManagement.Entities.csproj" Id="5694c385-21d1-45bd-bda1-024d09076b5e" />
+</Solution>
