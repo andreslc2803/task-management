@@ -1,3 +1,16 @@
+# TaskManagement BD
+
+## Pasos para ejecutar el proyecto por BD
+
+### Prerrequisitos 
+Instalar el motor de bd SQL Server y SQL Server Management Studio 
+
+1. Crear Bd y tablas: Ejecutar los script que estan en la carpeta ScriptsBd -> CreateDbAndTables (es su respectivo orden numerico)
+
+2. Alimentar las tablas: Ejecutar los script que estan en la carpeta ScriptsBd -> InsertData (es su respectivo orden numerico)
+
+### Nota: En la carpeta ScriptsBd -> QueriesJSON estan las consultas utilizando los diferentes metodos JSON de Sql server (ISJSON, JSON_VALUE, JSON_QUERY, OPENJSON )
+
 # TaskManagement API
 
 ## Pasos para ejecutar el proyecto
@@ -11,6 +24,8 @@ Ubicate en la rama:
    ```branch 
    master
    ```
+
+### Nota: Tener presente las dependencias en las capas de Api y DAL
 
 2. Configura la cadena de conexión para desarrollo en `TaskManagement.Api/appsettings.Development.json` o mediante la variable de entorno `ConnectionStrings__DefaultConnection`.
 
